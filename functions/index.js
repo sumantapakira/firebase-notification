@@ -51,35 +51,24 @@ admin.initializeApp();
   .onWrite((change, context) => {
     console.log("---onWrite event called----");
 
-    // Only edit data when it is first created.
-   /* if (change.before.exists()) {
-        console.log("---onWrite 1111----");
-        return null;
-    }*/
       // Exit when the data is deleted.
       if (!change.after.exists()) {
-        console.log("---onWrite 222----");
         return null;
       }
-      /*const shouldSendNotification = change.after.val();
-      console.log("shouldSendNotification", shouldSendNotification);
-      console.log("val: ",change.after.ref.parent);
-      //console.log("pageUrl: ",change.after.ref.parent.child('pageUrl').val());
-      return change.after.ref.parent.child('shouldSendNotification').set("false");*/
-
+ 
    var shouldSendNotificationAfter = change.after.child('shouldSendNotification').val();
   var pageUrlAfter = change.after.child('pageUrl').val();
   var topic = change.after.child('topic').val();
-  console.log("pageUrlAfter new val : ",pageUrlAfter);
+  var name = change.after.child('name').val(); 
+  var message = change.after.child('message').val();    
   console.log("topic: ",topic);
     
   var rootSnapshot = change.after.ref.parent.child(context.params.pushId);
-  
-  rootSnapshot.child('shouldSendNotification').set("false");
+  rootSnapshot.child('shouldSendNotification').set("false");   
 
  const payload = {notification: {
-    title: 'Approval Required',
-    body: pageUrlAfter
+    title: name,
+    body: message
     }
 };
 return admin.messaging().sendToTopic(topic, payload);
